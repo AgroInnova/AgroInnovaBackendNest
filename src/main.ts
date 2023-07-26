@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { MqttModule } from './mqtt/mqtt.module';
-import { MqttConfig } from './Configs/mqttconfig';
+import { MqttConfig } from './mqtt/Configs/mqttconfig';
 
 async function bootstrapAPP() {
   const app = await NestFactory.create(AppModule);

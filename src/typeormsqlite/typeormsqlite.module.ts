@@ -1,8 +1,9 @@
-import { TypeOrmConfig } from './../Configs/typeormconfig';
+import { TypeOrmConfig } from './Configs/typeormconfig';
 import { Module } from '@nestjs/common';
 import { TypeormsqliteService } from './typeormsqlite.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ModuleEntity } from './EntityDto/module.entity';
+import { PubSub } from 'graphql-subscriptions';
 
 @Module({
   imports: [
@@ -10,7 +11,13 @@ import { ModuleEntity } from './EntityDto/module.entity';
     TypeOrmModule.forFeature([ModuleEntity]),
   ],
   controllers: [],
-  providers: [TypeormsqliteService],
-  exports: [TypeormsqliteService],
+  providers: [
+    TypeormsqliteService,
+    {
+      provide: 'PUB_SUB',
+      useValue: new PubSub(),
+    },
+  ],
+  exports: [TypeormsqliteService, 'PUB_SUB'],
 })
 export class TypeormsqliteModule {}

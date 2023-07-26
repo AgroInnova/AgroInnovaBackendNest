@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import { MqttOptionsConfig } from 'src/Configs/mqttoptions';
 import { MqttController } from './mqtt.controller';
 import { TypeormsqliteModule } from 'src/typeormsqlite/typeormsqlite.module';
 import { MqttService } from './mqtt.service';
+import { MqttOptionsConfig } from './Configs/mqttoptions';
 
 const mqttoptions = new MqttOptionsConfig();
 
@@ -11,5 +11,6 @@ const mqttoptions = new MqttOptionsConfig();
   imports: [ClientsModule.register([mqttoptions]), TypeormsqliteModule],
   controllers: [MqttController],
   providers: [MqttService],
+  exports: [MqttService],
 })
 export class MqttModule {}

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MqttModule } from './mqtt/mqtt.module';
+import { GraphQlserverModule } from './graph-qlserver/graph-qlserver.module';
+import { TypeormsqliteModule } from './typeormsqlite/typeormsqlite.module';
 
 @Module({
-  imports: [MqttModule],
+  imports: [GraphQlserverModule, TypeormsqliteModule],
   controllers: [],
   providers: [],
 })
