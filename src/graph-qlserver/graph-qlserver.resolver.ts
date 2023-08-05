@@ -6,11 +6,12 @@ import {
   Mutation,
   Subscription,
 } from '@nestjs/graphql';
-import { ModuleObjectType } from './ObjectTypes/moduleOT';
 import { TypeormsqliteService } from 'src/typeormsqlite/typeormsqlite.service';
 import { MqttService } from 'src/mqtt/mqtt.service';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
+import { ModuleOT } from './ObjectTypes/moduleOT';
+import { moduleAguaOT } from './ObjectTypes/moduleAguaOT';
 
 @Resolver()
 export class GraphQlserverResolver {
@@ -20,33 +21,70 @@ export class GraphQlserverResolver {
     @Inject('PUB_SUB') private pubSub: PubSub,
   ) {}
 
-  @Query(() => [ModuleObjectType], { name: 'RetreiveAllModules' })
+  @Query(() => [ModuleOT], { name: 'RetreiveAllModules' })
   async modules() {
-    return this.typeOrmService.findAll();
+    return this.typeOrmService.findAllModule();
   }
-  @Query(() => [ModuleObjectType], { name: 'LastXModule' })
+
+  @Query(() => [ModuleOT], { name: 'moduleAdded' })
+  async LastModuleSavedStatic() {
+    return this.typeOrmService.findLastModule();
+  }
+
+  @Query(() => [moduleAguaOT], { name: 'getAllModuleAgua' })
+  async getallModuleAgua() {
+    return this.typeOrmService.findAllModuleAgua();
+  }
+
+  @Query(() => [ModuleOT], { name: 'LastXModule' })
   async LastXModules(
     @Args('ammount', { type: () => Int }) ammount: number,
     @Args('Id', { type: () => Int }) Id: number,
   ) {
     return this.typeOrmService.findLastXModulo(ammount, Id);
   }
-  @Mutation(() => Boolean)
-  async changeValve(
-    @Args('moduleId', { type: () => Int }) moduleId: number,
-    @Args('ValveState', { type: () => Int }) ValveState: boolean,
-  ) {
-    const message = JSON.parse(JSON.stringify({ moduleId, ValveState }));
-    this.mqttservice.sendMqttMessage(`modulo/valve`, message);
-  }
-  @Mutation(() => Boolean)
-  async changePump(@Args('PumpState', { type: () => Int }) PumpState: boolean) {
-    const message = JSON.parse(JSON.stringify({ PumpState }));
-    this.mqttservice.sendMqttMessage(`modulo/pump`, message);
+
+  @Query(() => moduleAguaOT, { name: 'FindLastAguaModule' })
+  async lastAguaModule() {
+    return this.typeOrmService.findLastModuleAgua();
   }
 
-  @Subscription(() => ModuleObjectType, { name: 'moduleAdded' })
+  @Mutation(() => Boolean, { name: 'changeValve' })
+  async changeValve(
+    @Args('moduleId', { type: () => Int }) moduleId: number,
+    @Args('Value', { type: () => Boolean }) value: boolean,
+  ) {
+    const message = JSON.parse(JSON.stringify({ moduleId, value }));
+    this.mqttservice.sendMqttMessage(`modulo/valve`, message);
+    return value;
+  }
+
+  @Mutation(() => Boolean, { name: 'changePump' })
+  async changePump(
+    @Args('PumpState', { type: () => Boolean }) PumpState: boolean,
+  ) {
+    const message = JSON.parse(JSON.stringify({ PumpState }));
+    this.mqttservice.sendMqttMessage(`pump/request`, message);
+    return PumpState;
+  }
+
+  @Subscription(() => ModuleOT, { name: 'moduleAdded' })
   async moduleUpdate() {
     return this.pubSub.asyncIterator('moduleAdded');
+  }
+
+  @Subscription(() => moduleAguaOT, { name: 'moduleAguaAdded' })
+  async pumpUpdate() {
+    return this.pubSub.asyncIterator('moduleAguaAdded');
+  }
+
+  @Query(() => [moduleAguaOT], { name: 'findModuleAguaBetweenInterval' })
+  async findModuleAguaBetweenInterval(
+    @Args('startDate') startDate: string,
+    @Args('endDate') endDate: string,
+  ): Promise<moduleAguaOT[]> {
+    const date1 = new Date(startDate);
+    const date2 = new Date(endDate);
+    return this.typeOrmService.findModuleAguaBetweenInterval(date1, date2);
   }
 }

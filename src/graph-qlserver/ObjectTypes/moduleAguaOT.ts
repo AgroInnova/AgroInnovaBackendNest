@@ -2,21 +2,18 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class ModuleOT {
+export class moduleAguaOT {
   @Field(() => Int)
   id: number;
 
-  @Field(() => Int)
-  moduleId: number;
+  @Field(() => Float)
+  nivel: number;
 
   @Field(() => Float)
-  temperature: number;
-
-  @Field(() => Float)
-  humidity: number;
+  ph: number;
 
   @Field(() => Boolean)
-  valve: boolean;
+  pumpState: boolean;
 
   @Field(() => Date)
   dateTime: Date;

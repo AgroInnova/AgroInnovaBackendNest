@@ -20,9 +20,9 @@ export class ModuleEntity {
   @Column()
   humidity: number;
 
-  @CreateDateColumn({ type: 'datetime' })
-  dateTime: Date;
-
   @Column()
   valve: boolean;
+
+  @CreateDateColumn({ type: 'datetime' })
+  dateTime: Date;
 }
