@@ -17,7 +17,7 @@ export class TypeormsqliteService {
     @InjectRepository(ModuleAguaEntity)
     private moduleAguaRepository: Repository<ModuleAguaEntity>,
     @Inject('PUB_SUB') private readonly pubSub: PubSub,
-    private httpService : HttpService,
+    private httpService: HttpService,
   ) {}
 
   async CreateModule(module: ModuleDTO): Promise<ModuleEntity> {
@@ -28,14 +28,19 @@ export class TypeormsqliteService {
     if (!savedModule) throw new Error('Error saving module');
     else {
       this.pubSub.publish('moduleAdded', { moduleAdded: savedModule });
-      this.httpService.post('http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000/sensorData', savedModule).subscribe(
-        (response) => {
-          console.log(response.status);
-        },
-        (error) => {
-          console.log(error);
-        },
-      );
+      this.httpService
+        .post(
+          'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:8000/sensorData',
+          savedModule,
+        )
+        .subscribe(
+          (response) => {
+            console.log();
+          },
+          (error) => {
+            console.log();
+          },
+        );
       return savedModule;
     }
   }
@@ -66,7 +71,7 @@ export class TypeormsqliteService {
         'dateTime',
       ])
       .getRawMany<ModuleEntity>();
-      return query;
+    return query;
   }
 
   async findAllModuleAgua(): Promise<ModuleAguaEntity[]> {
