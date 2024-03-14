@@ -5,12 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ModuleEntity } from './EntityDto/module.entity';
 import { PubSub } from 'graphql-subscriptions';
 import { ModuleAguaEntity } from './EntityDto/moduleAgua.entity';
+import { HttpModule } from '@nestjs/axios';
+
+
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(TypeOrmConfig),
     TypeOrmModule.forFeature([ModuleEntity, ModuleAguaEntity]),
-  ],
+    HttpModule,
+  ]
+  ,
   controllers: [],
   providers: [
     TypeormsqliteService,

@@ -25,4 +25,7 @@ export class ModuleEntity {
 
   @CreateDateColumn({ type: 'datetime' })
   dateTime: Date;
+
+  @Column()
+  client: number;
 }

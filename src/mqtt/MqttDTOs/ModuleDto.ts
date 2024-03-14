@@ -4,4 +4,5 @@ export class ModuleDTO {
   humidity: number;
   dateTime: Date;
   valve: boolean;
+  client: number;
 }

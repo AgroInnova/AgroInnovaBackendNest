@@ -20,4 +20,7 @@ export class ModuleOT {
 
   @Field(() => Date)
   dateTime: Date;
+
+  @Field(() => Int)
+  client: number;
 }

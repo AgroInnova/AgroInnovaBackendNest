@@ -70,7 +70,8 @@ export class GraphQlserverResolver {
 
   @Subscription(() => ModuleOT, { name: 'moduleAdded' })
   async moduleUpdate() {
-    return this.pubSub.asyncIterator('moduleAdded');
+    const sub = this.pubSub.asyncIterator('moduleAdded');
+    return sub;
   }
 
   @Subscription(() => moduleAguaOT, { name: 'moduleAguaAdded' })
