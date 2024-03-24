@@ -1,3 +1,5 @@
+import * as dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,17 +30,18 @@ export class TypeormsqliteService {
     if (!savedModule) throw new Error('Error saving module');
     else {
       this.pubSub.publish('moduleAdded', { moduleAdded: savedModule });
+
       this.httpService
-        .post(
-          'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:8000/sensorData',
+        .post('http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000/sensorData', {
           savedModule,
-        )
+        })
         .subscribe(
           (response) => {
-            console.log();
+            console.log(response);
           },
           (error) => {
-            console.log();
+
+            console.log(error);
           },
         );
       return savedModule;
@@ -101,6 +104,9 @@ export class TypeormsqliteService {
       ])
       .groupBy('moduleId')
       .getRawMany<ModuleEntity>();
+
+
+
 
     for (const module of query) {
       module.dateTime = new Date(module.dateTime);
